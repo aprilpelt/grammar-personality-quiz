@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Kind of Grammar Teacher Are You?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --parchment: #f5f0e1;
+      --parchment-dark: #ede7d3;
+      --ink: #2c2416;
+      --ink-mid: #5a4e38;
+      --gold: #c4a24c;
+      --gold-light: #e8d49a;
+      --border: #d9d3c7;
+      --rose:   #f5e8e8;
+      --rose-b: #c9a0a0;
+      --orange: #f5ede0;
+      --orange-b: #c9a878;
+      --yellow: #f5f0d8;
+      --yellow-b: #c9bf78;
+      --green:  #e8f0e8;
+      --green-b: #90b890;
+      --teal:   #e0f0f0;
+      --teal-b: #78b8b8;
+      --blue:   #e0e8f5;
+      --blue-b: #78a0c9;
+      --violet: #ede8f5;
+      --violet-b: #a890c9;
+    }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      background-color: var(--parchment);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .quiz-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .quiz-header {
+      text-align: center;
+      padding: 2.5rem 2rem 2rem;
+      border: 2px solid var(--gold);
+      border-radius: 4px;
+      background: linear-gradient(160deg, #fdfaf3 0%, var(--parchment) 100%);
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .quiz-header::before, .quiz-header::after {
+      content: '◆';
+      color: var(--gold);
+      font-size: 0.8rem;
+      position: absolute;
+      top: 0.6rem;
+    }
+    .quiz-header::before { left: 0.8rem; }
+    .quiz-header::after  { right: 0.8rem; }
+
+    .kicker {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .quiz-intro {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--ink-mid);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-bar-wrap {
+      background: var(--border);
+      border-radius: 99px;
+      height: 6px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-light), var(--gold));
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .progress-label {
+      font-size: 0.8rem;
+      color: var(--ink-mid);
+      text-align: right;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── QUESTION CARD ── */
+    .question-card {
+      background: #fdfaf3;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+      display: none;
+      animation: fadeSlide 0.35s ease both;
+    }
+    .question-card.active { display: block; }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-number {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+    }
+
+    .question-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.15rem;
+      line-height: 1.45;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── OPTIONS ── */
+    .options { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .option-btn {
+      background: var(--parchment);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.85rem 1.1rem;
+      text-align: left;
+      cursor: pointer;
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--ink);
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .option-btn:hover {
+      background: var(--gold-light);
+      border-color: var(--gold);
+      transform: translateX(3px);
+    }
+    .option-btn.selected {
+      background: var(--gold-light);
+      border-color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* color accent per question */
+    .q1 .option-btn.selected { background: var(--rose);   border-color: var(--rose-b); }
+    .q2 .option-btn.selected { background: var(--orange); border-color: var(--orange-b); }
+    .q3 .option-btn.selected { background: var(--yellow); border-color: var(--yellow-b); }
+    .q4 .option-btn.selected { background: var(--green);  border-color: var(--green-b); }
+    .q5 .option-btn.selected { background: var(--teal);   border-color: var(--teal-b); }
+    .q6 .option-btn.selected { background: var(--blue);   border-color: var(--blue-b); }
+    .q7 .option-btn.selected { background: var(--violet); border-color: var(--violet-b); }
+    .q8 .option-btn.selected { background: var(--rose);   border-color: var(--rose-b); }
+
+    /* ── NAV ── */
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.25rem;
+    }
+
+    .btn {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      padding: 0.6rem 1.4rem;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid var(--gold);
+      background: transparent;
+      color: var(--ink-mid);
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn:hover { background: var(--gold); color: var(--ink); }
+    .btn:disabled { opacity: 0.3; cursor: default; }
+    .btn:disabled:hover { background: transparent; color: var(--ink-mid); }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: #b8922e; }
+
+    /* ── RESULTS ── */
+    #results {
+      display: none;
+      animation: fadeSlide 0.5s ease both;
+    }
+
+    .result-card {
+      border: 2px solid var(--gold);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #fdfaf3;
+      margin-bottom: 1.5rem;
+    }
+
+    .result-banner {
+      background: var(--gold);
+      padding: 1.2rem 2rem;
+      text-align: center;
+    }
+    .result-banner .result-type {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.75;
+      margin-bottom: 0.3rem;
+    }
+    .result-banner h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .result-banner .result-subtitle {
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--ink);
+      opacity: 0.8;
+      margin-top: 0.3rem;
+    }
+
+    .result-body { padding: 1.75rem 2rem; }
+
+    .result-desc {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--ink-mid);
+      margin-bottom: 1.25rem;
+    }
+
+    .result-traits {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .trait {
+      padding: 0.6rem 0.9rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      border-left: 3px solid;
+    }
+
+    .result-classroom {
+      background: var(--parchment);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 1.2rem;
+    }
+    .result-classroom strong {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.4rem;
+    }
+    .result-classroom p {
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--ink-mid);
+    }
+
+    /* spectrum bar */
+    .spectrum-wrap { margin: 1.25rem 0; }
+    .spectrum-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-mid);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.03em;
+    }
+    .spectrum-track {
+      background: var(--border);
+      border-radius: 99px;
+      height: 10px;
+      position: relative;
+      overflow: visible;
+    }
+    .spectrum-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #c9a0a0, #c9bf78, #78b8b8, #a890c9);
+      transition: width 0.8s cubic-bezier(.4,0,.2,1);
+    }
+    .spectrum-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 3px solid #fdfaf3;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: left 0.8s cubic-bezier(.4,0,.2,1);
+    }
+
+    .retake-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 0.75rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 0.88rem;
+      color: var(--ink-mid);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .retake-btn:hover { border-color: var(--gold); color: var(--ink); }
+
+    hr.ornament {
+      border: none;
+      text-align: center;
+      margin: 1.5rem 0;
+      color: var(--gold);
+      font-size: 1rem;
+      letter-spacing: 0.5rem;
+    }
+    hr.ornament::before { content: '· · ◆ · ·'; }
+  </style>
+</head>
+<body>
+<div class="quiz-wrap">
+
+  <!-- HEADER -->
+  <div class="quiz-header">
+    <p class="kicker">Grammar Philosophy Quiz</p>
+    <h1>The Language Instinct: Are You a Prescriptivist or a Descriptivist?</h1>
+    <p class="quiz-intro">Every grammar teacher has a gut reaction when they see "they literally died laughing" or a double negative in a student essay. This quiz puts your instincts on the spectrum—and explains what your results mean for your classroom practice.</p>
+  </div>
+
+  <!-- QUIZ BODY -->
+  <div id="quiz-body">
+    <div class="progress-label" id="progress-label">Question 1 of 8</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar" style="width:12.5%"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results"></div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    colorClass: 'q1',
+    text: 'A student writes: "Everyone should bring their laptop to class tomorrow." Your reaction?',
+    options: [
+      { text: 'That\'s technically incorrect—"everyone" is singular, so it should be "his or her." I\'d mark it.', score: 1 },
+      { text: 'I know the traditional rule, but singular "they" is now accepted by APA and MLA. I\'d let it go or offer it as a style note.', score: 2 },
+      { text: 'Singular "they" has been in English since the 14th century. This is correct, natural, and nobody is confused by it.', score: 3 },
+    ]
+  },
+  {
+    colorClass: 'q2',
+    text: 'You overhear someone say "I could care less about grammar rules." You:',
+    options: [
+      { text: 'Wince. The correct phrase is "I couldn\'t care less." The other version is logically backwards and I can\'t unhear it.', score: 1 },
+      { text: 'Recognize it as an error but understand everyone knows what they mean. Not worth correcting in casual conversation.', score: 2 },
+      { text: 'Shrug. Language doesn\'t have to be logically consistent—"I could care less" has become an idiomatic expression with its own understood meaning.', score: 3 },
+    ]
+  },
+  {
+    colorClass: 'q3',
+    text: 'A student ends a formal essay sentence with: "That\'s the argument I was responding to." You:',
+    options: [
+      { text: 'Suggest revising it—"That\'s the argument to which I was responding" reads as more formal and correct.', score: 1 },
+      { text: 'Leave it. The "never end a sentence with a preposition" rule is a Latin-grammar holdover that doesn\'t reflect how English actually works.', score: 2 },
+      { text: 'Actively teach students that this "rule" was invented in the 17th century and has always been contested—and that Churchill\'s famous quip proves the point.', score: 3 },
+    ]
+  },
+  {
+    colorClass: 'q4',
+    text: 'You see the word "ain\'t" in a student\'s personal narrative. You:',
+    options: [
+      { text: 'Mark it as nonstandard. Even in a personal narrative, students should practice writing in Standard American English.', score: 1 },
+      { text: 'Leave it if it fits the voice of the piece—personal narrative is a genre where authentic voice matters. I\'d have a conversation about audience and context.', score: 2 },
+      { text: '"Ain\'t" is a legitimate English word with a long history. Whether it belongs in this essay depends entirely on the writer\'s intent and the audience.', score: 3 },
+    ]
+  },
+  {
+    colorClass: 'q5',
+    text: '"To boldly go where no one has gone before." How do you feel about this split infinitive?',
+    options: [
+      { text: 'It bothers me. "To go boldly" keeps the infinitive intact and is cleaner.', score: 1 },
+      { text: 'Split infinitives are fine in moderation—this one has great rhythm. The "rule" against them was always contested.', score: 2 },
+      { text: 'This is one of the most famous sentences in pop culture and it sounds exactly right. The split infinitive rule is a myth, full stop.', score: 3 },
+    ]
+  },
+  {
+    colorClass: 'q6',
+    text: 'A student uses a double negative in conversation: "I don\'t have no pencil." You think:',
+    options: [
+      { text: 'That\'s grammatically incorrect. Two negatives make a positive in English, just like in math.', score: 1 },
+      { text: 'Double negatives are nonstandard in formal English, but they\'re systematically grammatical in many dialects, including Appalachian English and AAVE. I\'d explain the difference between casual and academic registers.', score: 2 },
+      { text: 'Double negatives are perfectly logical and appear in Spanish, French, and Greek with no confusion. They\'re stigmatized in English for social, not linguistic, reasons.', score: 3 },
+    ]
+  },
+  {
+    colorClass: 'q7',
+    text: 'Which sentence do you prefer—and which would you accept in a student essay?',
+    options: [
+      { text: '"The data shows a clear correlation." — Data is a collective noun in everyday usage now; "shows" is the more natural choice.', score: 3 },
+      { text: 'I\'d accept either—"data is" in general writing, "data are" in scientific or technical contexts. Context determines the convention.', score: 2 },
+      { text: '"The data show a clear correlation." — Data is technically plural; using "show" respects the word\'s Latin origin.', score: 1 },
+    ]
+  },
+  {
+    colorClass: 'q8',
+    text: 'A student starts a paragraph with "And another thing worth noting is..." You:',
+    options: [
+      { text: 'Suggest revising it. Starting a sentence with "And" or "But" is informal, and academic writing should avoid it.', score: 1 },
+      { text: 'Leave it if it works rhetorically—but mention that some readers still flag it, so they should use the technique sparingly and intentionally.', score: 2 },
+      { text: 'Celebrate it. Starting with a conjunction creates great rhythm and emphasis. The Bible does it constantly. So does Toni Morrison.', score: 3 },
+    ]
+  },
+];
+
+const results = [
+  {
+    range: [8, 14],
+    type: 'The Grammar Guardian',
+    subtitle: 'Prescriptivist tendencies',
+    banner: '#c9a0a0',
+    bannerText: '#2c2416',
+    traitColor: '#f5e8e8',
+    traitBorder: '#c9a0a0',
+    desc: `You believe that Standard American English exists for good reasons—it creates shared conventions that enable clear communication across contexts, and part of teaching writing is initiating students into those conventions. You're not wrong. The rules you uphold reflect centuries of editorial consensus, and students who master them gain real access to academic and professional power.`,
+    traits: [
+      'You see rules as tools for clarity, not arbitrary constraints.',
+      'You may find yourself gently correcting friends\' grammar in casual conversation.',
+      'You value consistency and precision in student writing.',
+      'You believe students deserve to be explicitly taught the forms that gatekeepers reward.',
+    ],
+    classroom: `Your students benefit from clear, direct instruction and a high bar for formal writing. Watch for moments when the rules might be getting in the way of voice—especially in personal narrative and creative work. Consider explicitly naming when a rule reflects convention vs. logic: it gives students agency without undermining the standard.`,
+  },
+  {
+    range: [15, 21],
+    type: 'The Code-Switching Coach',
+    subtitle: 'Contextual pragmatist',
+    banner: '#c4a24c',
+    bannerText: '#2c2416',
+    traitColor: '#f5f0d8',
+    traitBorder: '#c9bf78',
+    desc: `You hold the rules and the reality at the same time. You teach Standard American English because it opens doors, and you also recognize that students arrive with rich, fully grammatical language systems that don't need to be corrected out of existence—just contextualized. You're comfortable saying "this is the convention for academic writing" without saying "your home dialect is wrong."`,
+    traits: [
+      'You think in terms of audience and purpose before marking something as an error.',
+      'You can hold "this is grammatically systematic" and "this isn\'t standard in formal writing" simultaneously.',
+      'You probably use the word "register" a lot.',
+      'Students with nonstandard home dialects tend to thrive in your classroom.',
+    ],
+    classroom: `You're modeling exactly the kind of metalinguistic awareness that the research supports. The challenge is making sure students leave your class with both: genuine facility in academic English AND a clear understanding that their home language is not inferior. Explicit instruction in genre conventions, not just "correctness," is your strongest move.`,
+  },
+  {
+    range: [22, 24],
+    type: 'The Language Scientist',
+    subtitle: 'Descriptivist tendencies',
+    banner: '#78b8b8',
+    bannerText: '#2c2416',
+    traitColor: '#e0f0f0',
+    traitBorder: '#78b8b8',
+    desc: `You see language as a natural system that changes, adapts, and branches into dialects and registers—none of which is inherently superior to any other. You're energized by the history of "rules" that turn out to be myths, and you bring that intellectual honesty to your teaching. You know the prescriptive conventions well; you just teach them as conventions rather than truths.`,
+    traits: [
+      'You\'ve probably argued about the Oxford comma at a party and enjoyed it.',
+      'You can trace the origin of a "grammar rule" to a specific 17th-century grammarian.',
+      'You find Lynne Truss\'s "Eats, Shoots & Leaves" charming but slightly misguided.',
+      'Students who love language as a subject come alive in your classroom.',
+    ],
+    classroom: `Your students gain something valuable: a genuine understanding of how language works rather than a list of rules to memorize and forget. The watch-out: make sure they leave with practical fluency in the conventions that academic and professional gatekeepers actually use. Knowing that a rule is arbitrary doesn't exempt a student from a job application. Pair your linguistic honesty with explicit instruction in register.`,
+  },
+];
+
+let current = 0;
+let scores = Array(questions.length).fill(null);
+
+function getResultForScore(total) {
+  return results.find(r => total >= r.range[0] && total <= r.range[1]) || results[1];
+}
+
+function renderQuestion() {
+  const quizBody = document.getElementById('quiz-body');
+  // Remove old cards
+  quizBody.querySelectorAll('.question-card').forEach(c => c.remove());
+
+  const q = questions[current];
+  const card = document.createElement('div');
+  card.className = `question-card active ${q.colorClass}`;
+
+  card.innerHTML = `
+    <p class="question-number">Question ${current + 1} of ${questions.length}</p>
+    <p class="question-text">${q.text}</p>
+    <div class="options">
+      ${q.options.map((o, i) => `
+        <button class="option-btn${scores[current] === o.score ? ' selected' : ''}"
+                data-score="${o.score}" data-qi="${current}" data-oi="${i}">
+          ${o.text}
+        </button>
+      `).join('')}
+    </div>
+    <div class="nav-row">
+      <button class="btn" id="btn-back" ${current === 0 ? 'disabled' : ''}>← Back</button>
+      <button class="btn btn-primary" id="btn-next" ${scores[current] === null ? 'disabled' : ''}>
+        ${current === questions.length - 1 ? 'See My Results' : 'Next →'}
+      </button>
+    </div>
+  `;
+
+  quizBody.appendChild(card);
+
+  // Progress
+  document.getElementById('progress-label').textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById('progress-bar').style.width = `${((current + 1) / questions.length) * 100}%`;
+
+  // Option listeners
+  card.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      scores[current] = parseInt(btn.dataset.score);
+      card.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('btn-next').disabled = false;
+    });
+  });
+
+  document.getElementById('btn-back').addEventListener('click', () => {
+    if (current > 0) { current--; renderQuestion(); }
+  });
+
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (current < questions.length - 1) {
+      current++;
+      renderQuestion();
+    } else {
+      showResults();
+    }
+  });
+}
+
+function showResults() {
+  document.getElementById('quiz-body').style.display = 'none';
+
+  const total = scores.reduce((a, b) => a + (b || 0), 0);
+  const pct = ((total - 8) / (24 - 8)) * 100; // 0 = full prescriptivist, 100 = full descriptivist
+  const r = getResultForScore(total);
+
+  const resultsEl = document.getElementById('results');
+  resultsEl.style.display = 'block';
+
+  resultsEl.innerHTML = `
+    <div class="result-card">
+      <div class="result-banner" style="background:${r.banner};">
+        <p class="result-type" style="color:${r.bannerText};">Your result</p>
+        <h2 style="color:${r.bannerText};">${r.type}</h2>
+        <p class="result-subtitle" style="color:${r.bannerText};">${r.subtitle}</p>
+      </div>
+      <div class="result-body">
+
+        <div class="spectrum-wrap">
+          <div class="spectrum-label-row">
+            <span>Prescriptivist</span>
+            <span>Descriptivist</span>
+          </div>
+          <div class="spectrum-track">
+            <div class="spectrum-fill" id="spec-fill" style="width:0%"></div>
+            <div class="spectrum-dot" id="spec-dot" style="left:0%"></div>
+          </div>
+        </div>
+
+        <hr class="ornament" />
+
+        <p class="result-desc">${r.desc}</p>
+
+        <div class="result-traits">
+          ${r.traits.map(t => `
+            <div class="trait" style="background:${r.traitColor}; border-color:${r.traitBorder};">${t}</div>
+          `).join('')}
+        </div>
+
+        <div class="result-classroom">
+          <strong>In Your Classroom</strong>
+          <p>${r.classroom}</p>
+        </div>
+
+      </div>
+    </div>
+    <button class="retake-btn" id="retake-btn">↩ Retake the quiz</button>
+  `;
+
+  // Animate spectrum after paint
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.getElementById('spec-fill').style.width = `${pct}%`;
+      document.getElementById('spec-dot').style.left = `${pct}%`;
+    }, 100);
+  });
+
+  document.getElementById('retake-btn').addEventListener('click', () => {
+    current = 0;
+    scores = Array(questions.length).fill(null);
+    resultsEl.style.display = 'none';
+    const quizBody = document.getElementById('quiz-body');
+    quizBody.style.display = 'block';
+    renderQuestion();
+  });
+}
+
+// Boot
+renderQuestion();
+</script>
+</body>
+</html>
